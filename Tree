@@ -1,0 +1,11 @@
+/**
+ * 
+ * @author Hayes
+ * Lowest level container object: a single member on a family tree, or a single entry on a time line would be represented
+ * in code as a tree. 
+ * 
+ * Tree's are planted in rows, and rows make up orchards
+ */
+public class Tree {
+
+}

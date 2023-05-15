@@ -1,0 +1,15 @@
+/**
+ * 
+ * @author Hayes
+ * 
+ * An orchard is the highest level container objects, for example, if one wanted to display two family trees, 
+ * side by side, one would create one Orchard object, which would contain two [THING] objects.
+ *
+ */
+public class Orchard {
+	
+	public static 
+	
+	
+
+}

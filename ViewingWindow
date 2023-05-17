@@ -18,32 +18,92 @@ public class ViewingWindow {
 	int lowerBound_;
 	int upperBound_;
 	
+	public ViewingWindow() {
+		
+	}
+	
+	public ViewingWindow(int lower, int upper) {
+		lowerBound_ = lower;
+		upperBound_ = upper;
+	}
+	
+	public boolean isVisible(Tree tree, int index) {
+		/**
+		 * determines if the info within a tree is currently visible, baised on the info's visiblePoint, and the 
+		 * current range of the ViewingWindow
+		 * 
+		 * tree: the tree of interest
+		 * index: the index of the desired content node
+		 */
+		
+		
+		if(tree.hideSpoilers_ == false) {
+			//if the tree doesn't hide spoilers the info is automatically visible
+			return true;
+		}
+		
+		int visiblePoint = tree.getVisiblePoint(index);
+		
+		if(visiblePoint >= lowerBound_ && visiblePoint <= upperBound_) {
+			return true;
+		}
+		return false;
+	}//end isVisible(tree, index);
 	
 	
-	
-	
-	public String printOrchard() {
+	/**
+	 * 
+	 * The following "printX" methods are primarly debugging tools
+	 */
+	public String printOrchard(Orchard orchard) {
 		/**
 		 * returns a string representative of an orchard
 		 */
+		
+		String product = "";
 		
 		return "dummy";
 	}
 	
 	
-	public String printRow() {
+	public String printRow(Row row) {
 		/**
 		 * returns a string representative of a Row
 		 */
-		return "dummy";
+		String content = "";
+		for(int index = 0 ; index < row.size() ; index++) {
+			//basically we just call print tree over and over again, but we add carrige returns 
+			
+			content = content + printTree(row.getTree(index));
+			content = content + "\r";
+			content = content + "     |     ";
+			content = content + "\r";
+			
+			
+		}//end for(index)		
+		
+		return content;	
 	}
 	
-	public String printTree() {
+	public String printTree(Tree tree) {
 		/**
 		 * returns a string representative of a Tree
 		 */
-		return "dummy";
-	}
+		
+		String product = "| ";
+		String content = "";
+		for(int index = 0 ; index < tree.size() ; index++) {
+			
+			if(isVisible(tree, index)){
+				content = tree.getContent(index);
+				product = product + content + " | ";
+			}
+			
+		}//end for(index)		
+		
+		return product;	
+		
+	}//end printTree()
 	
 	
 	

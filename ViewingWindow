@@ -1,0 +1,55 @@
+/**
+ * 
+ * @author Hayes
+ * Represents the dynamic parts of the implementation: rows, orchards, and tree's are information containers, this viewing
+ * window interacts with them, and is what's used to control things like if a visibilty check has been passed.
+ */
+public class ViewingWindow {
+
+	 //each individual tree contains some information, along with some check that determines if said
+	 //info is currently visible. Currently visibility is decided by Orchard level info, but that's overly
+	 //complicated/ puts info that's beyond the orchard's scope in the orchard class.
+	 //almost implies that there should be some kind of "Viewing Window" class, and that would 
+	 //directly interact with tree's to determine if info is visible.
+	
+	boolean variableView_; //determines if changing the viewing range effects the info being displayed:
+						   //if this is false, all info is always displayed
+	
+	int lowerBound_;
+	int upperBound_;
+	
+	
+	
+	
+	
+	public String printOrchard() {
+		/**
+		 * returns a string representative of an orchard
+		 */
+		
+		return "dummy";
+	}
+	
+	
+	public String printRow() {
+		/**
+		 * returns a string representative of a Row
+		 */
+		return "dummy";
+	}
+	
+	public String printTree() {
+		/**
+		 * returns a string representative of a Tree
+		 */
+		return "dummy";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

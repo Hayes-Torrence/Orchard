@@ -1,17 +1,68 @@
 /**
  * 
  * @author Hayes
- * 
- * An orchard is the highest level container objects, for example, if one wanted to display two family trees, 
- * side by side, one would create one Orchard object, which would contain two [THING] objects.
- *
+ * Named after tree rows in an orchard, mid level object: a single time line, or a single family tree would be represented 
+ * in code as a Row
  */
-public class Orchard {
+
+
+import java.util.ArrayList;
+
+public class Row {
+
+	protected int start_; //used with end to set the "bounds" of the row, for a timeline this would be the start and end date
+	protected int end_;
+	protected ArrayList<Tree> trees_;
+
 	
-	public Orchard() {
-		
+	private Row() {
+		/*
+		 * Opperations on the row level: adding nodes, reordering nodes, setting/effecting the bounds of a row
+		 */
+		trees_ = new ArrayList<Tree>();
+	}
+	
+	public Row(int start, int end) {
+		super();
+		start_ = start;
+		end_ = end;
+	}
+	
+	public int getStart() {
+		return start_;
+	}
+	
+	private void setStart(int start) {
+		start_ = start;
+	}
+	
+	public int getEnd() {
+		return end_;
+	}
+	
+	private void setEnd(int end) {
+		end_ = end;
 	}
 	
 	
-
+	
+	
+	
+	
+	
+	/*
+	 * Reordering Nodes(){
+	 * 	
+	 * 	A drag and drop implementation would require that by selecting a point along the row, will be able to 
+	 *  Potentially more efficient to instead of actually moving things within the rows_ list, have a secondary list
+	 *  where indicies are corelated, and the value stored in the secondary list is the position of the object in the first
+	 *  list, in the row, 
+	 *  
+	 *  The above idea is an optimization, not an implementation, save it for round two: write good enough code, and will 
+	 *  be able to implement it pretty seamlessly
+	 * 
+	 * }
+	 */
+	
+	
 }

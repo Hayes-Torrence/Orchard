@@ -6,6 +6,109 @@
  * 
  * Tree's are planted in rows, and rows make up orchards
  */
+import java.util.ArrayList; //I use alot of arraylists
 public class Tree {
+	
+	
+	private String name_;
+	boolean hideSpoilers_;
+	private ArrayList<String> content_;
+	private ArrayList<Integer> visiblePoint_; //the date associated with each piece of content that must be encompased by 
+									  //the viewing window for the associated content to be visible
+	
+	ArrayList<Boolean> isVisible_; //this is not initilized immediatly, but rather when we start viewing data, it is
+									//initilized, and used to keep track of info.
+	
+	
+	/*
+	 * It might be better to instead of continuously check if each piece of info is visible, to have a third list, 
+	 * which is just "is currently visible", then if any actions are performed that effect the visibility of a piece of info
+	 * we run through and check each piece, assign the appropriate flag, then use that to determine if a piece of content
+	 * is visible
+	 */
+				
+		
+	private Tree(String name) {
+		/**
+		 * private constructor that handles everything that always has to happen, each specific case get's it's own
+		 * constructor that calls this one.
+		 * 
+		 * Might be abit superfluous, but it's good for now
+		 */
+		content_ = new ArrayList<String>();
+		name_ = name;
+		visiblePoint_ = new ArrayList<Integer>();
+	}
+	
+	
+	
+	public Tree(String name, boolean hideSpoilers) {
+		
+		this(name);		
+		hideSpoilers_ = hideSpoilers;
 
+	}
+	
+	public String getContent(int index) {
+		return content_.get(index);
+	}
+	
+	public void AddContent(String content) {
+		/**
+		 *String content: the info to be added to the tree
+		 */
+		content_.add(content);
+		if(hideSpoilers_ == true) {
+			/*
+			 * if this is true, we must also handle the visiblePoints_ list (i.e. just because this data point has no marker
+			 * We still have to make sure the list 
+			 */
+			visiblePoint_.add(null);
+		}
+		
+	}
+	
+	public void AddContent(String content, int visibleDate) {
+		content_.add(content);
+		visiblePoint_.add(new Integer(visibleDate));
+	}
+	
+	
+	public ArrayList getContent() {
+		return content_;
+	}
+	
+	public ArrayList getVisiblePoints() {
+		return visiblePoint_;
+	}
+	
+	public int getVisiblePoint(int index) {
+		return visiblePoint_.get(index);
+	}
+	
+	public int size() {
+		return content_.size();
+	}
+	
+	
+	public void ReorderContent(int from, int to) {
+		/**
+		 * Handles reordering elements of the "content" list, also properly handles associated actions:
+		 * namely reordering the visiblePoint_ List appropriately
+		 * 
+		 * 
+		 */
+			
+	}
+	
+	
+	public void ReorderChronologicly() {
+		/**
+		 * potential method that will reorganize the content_ list in chronological order as set by the VisiblePoints_ list
+		 */
+	}
+	
+	
+	
 }
+

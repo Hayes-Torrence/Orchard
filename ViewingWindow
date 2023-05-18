@@ -43,10 +43,6 @@ public class ViewingWindow {
 		 */
 		
 		
-		if(tree.hideSpoilers_ == false) {
-			//if the tree doesn't hide spoilers the info is automatically visible
-			return true;
-		}
 		
 		int visiblePoint = tree.getLeaves().get(index).getVisibleDate();
 		

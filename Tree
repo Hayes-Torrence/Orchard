@@ -13,7 +13,8 @@ public class Tree {
 	private String name_;
 	boolean hideSpoilers_;
 	private ArrayList<Leaf> leaves_;
-	
+	private int plantDate_;//instead of storing a list of when all the trees "are" in each row, each tree instead gets a 
+							//"plant date" this refers to where on the row the tree appears
 	ArrayList<Boolean> isVisible_; //this is not initilized immediatly, but rather when we start viewing data, it is
 									//initilized, and used to keep track of info.
 	
@@ -28,7 +29,7 @@ public class Tree {
 	
 	
 		
-	private Tree(String name) {
+	private Tree(String name, int location) {
 		/**
 		 * private constructor that handles everything that always has to happen, each specific case get's it's own
 		 * constructor that calls this one.
@@ -41,9 +42,9 @@ public class Tree {
 	
 	
 	
-	public Tree(String name, boolean hideSpoilers) {
+	public Tree(String name, int location, boolean hideSpoilers) {
 		
-		this(name);		
+		this(name, location);		
 		hideSpoilers_ = hideSpoilers;
 
 	}
@@ -72,6 +73,10 @@ public class Tree {
 	
 	public int size() {
 		return leaves_.size();
+	}
+	
+	public int getPlantDate() {
+		return plantDate_;
 	}
 	
 	

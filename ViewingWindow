@@ -3,7 +3,13 @@
  * @author Hayes
  * Represents the dynamic parts of the implementation: rows, orchards, and tree's are information containers, this viewing
  * window interacts with them, and is what's used to control things like if a visibilty check has been passed.
+ * 
+ * Think of it like this: the orchard is all the info, the window is the portion we're currently looking at.
+ * 
+ * 
  */
+
+
 public class ViewingWindow {
 
 	 //each individual tree contains some information, along with some check that determines if said
@@ -42,7 +48,7 @@ public class ViewingWindow {
 			return true;
 		}
 		
-		int visiblePoint = tree.getVisiblePoint(index);
+		int visiblePoint = tree.getLeaves().get(index).getVisibleDate();
 		
 		if(visiblePoint >= lowerBound_ && visiblePoint <= upperBound_) {
 			return true;
@@ -53,12 +59,26 @@ public class ViewingWindow {
 	
 	/**
 	 * 
-	 * The following "printX" methods are primarly debugging tools
+	 * The following "printX" methods are primarly debugging tools/ensurance the engine is running right when start
+	 * working with graphics.
+	 * 
 	 */
 	public String printOrchard(Orchard orchard) {
 		/**
 		 * returns a string representative of an orchard
+		 * 
+		 * More difficult than initially appears: seeing as the idea of an orchard is that it allows for printing
+		 * simultaneous rows.
+		 * 
+		 * 
+		 * Create a master array (with dates? (each ArrayRow coresponds with a unique date?)), 
+		 * 
+		 * 
+		 * 
 		 */
+		
+		
+		
 		
 		String product = "";
 		
@@ -95,7 +115,7 @@ public class ViewingWindow {
 		for(int index = 0 ; index < tree.size() ; index++) {
 			
 			if(isVisible(tree, index)){
-				content = tree.getContent(index);
+				content = tree.getLeaves().get(index).getContent();
 				product = product + content + " | ";
 			}
 			

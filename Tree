@@ -11,7 +11,7 @@ public class Tree {
 	
 	
 	private String name_;
-	boolean hideSpoilers_;
+	//boolean hideSpoilers_;
 	private ArrayList<Leaf> leaves_;
 	private int plantDate_;//instead of storing a list of when all the trees "are" in each row, each tree instead gets a 
 							//"plant date" this refers to where on the row the tree appears
@@ -29,7 +29,7 @@ public class Tree {
 	
 	
 		
-	private Tree(String name, int location) {
+	public Tree(String name, int plantDate) {
 		/**
 		 * private constructor that handles everything that always has to happen, each specific case get's it's own
 		 * constructor that calls this one.
@@ -38,16 +38,9 @@ public class Tree {
 		 */
 		leaves_ = new ArrayList<Leaf>();
 		name_ = name;
+		plantDate_ = plantDate;
 	}
 	
-	
-	
-	public Tree(String name, int location, boolean hideSpoilers) {
-		
-		this(name, location);		
-		hideSpoilers_ = hideSpoilers;
-
-	}
 	
 	public String getContent(int index) {
 		return leaves_.get(index).getContent();

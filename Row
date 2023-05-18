@@ -55,7 +55,7 @@ public class Row {
 		/**
 		 * Add's tree w/o constructing Tree object first, defaults to tree having dynamic info display
 		 */
-		trees_.add(new Tree(name, plantDate, true));
+		trees_.add(new Tree(name, plantDate));
 		expandRow(plantDate);
 	}
 	

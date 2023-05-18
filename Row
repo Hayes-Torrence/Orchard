@@ -14,7 +14,7 @@ public class Row {
 	protected int end_;
 	protected String name_;
 	protected ArrayList<Tree> trees_;
-	protected ArrayList<Integer> treeLocations_;//list of the actual position within the row of a tree.
+	//protected ArrayList<Integer> treeLocations_;//list of the actual position within the row of a tree.
 
 	
 	
@@ -23,7 +23,6 @@ public class Row {
 		 * Opperations on the row level: adding nodes, reordering nodes, setting/effecting the bounds of a row
 		 */
 		trees_ = new ArrayList<Tree>();
-		treeLocations_ = new ArrayList<Integer>();
 		name_ = name;
 	}
 	
@@ -42,24 +41,22 @@ public class Row {
 		end_ = end;
 	}
 	
-	public void addTree(Tree tree, int location) {
+	public void addTree(Tree tree) {
 		/**
 		 * Add's tree, then ensures the bounds of the row include the new tree.
 		 */
 		trees_.add(tree);
-		treeLocations_.add(location);
-		expandRow(location);
+		expandRow(tree.getPlantDate());
 	}
 	
 
 	
-	public void addTree(String name, int location) {
+	public void addTree(String name, int plantDate) {
 		/**
 		 * Add's tree w/o constructing Tree object first, defaults to tree having dynamic info display
 		 */
-		trees_.add(new Tree(name, true));
-		treeLocations_.add(location);
-		expandRow(location);
+		trees_.add(new Tree(name, plantDate, true));
+		expandRow(plantDate);
 	}
 	
 	private void expandRow(int location) {

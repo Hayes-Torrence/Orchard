@@ -35,7 +35,9 @@
 
 			let mesh;
 
-
+			var raycaster = new THREE.Raycaster();
+			var pointer = new THREE.Vector2();
+			var intersects;
 			const orchard = [];//array of Rows (for now)
 
 
@@ -87,7 +89,7 @@
 				addTreeTest(4);
 				addTreeTest(10);
 */
-				var testRow3 = Row("The Ottomans");
+				var testRow3 = Row("The Ottomans",-10, 10);
 				var testTree = Tree("Sulyman", 9);
 				var testLeaf = Leaf("Sulyman executed the grandvizir", 7);
 
@@ -130,6 +132,21 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+
+				//raycasting code
+				//TODO: finish raycasting implementation
+				window.addEventListener( 'pointermove', onPointerMove );
+
+			}
+
+			function onPointerMove( event ) {
+
+				// calculate pointer position in normalized device coordinates
+				// (-1 to +1) for both components
+
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
 			}
 
 
@@ -150,9 +167,10 @@
 					//currently only varies accross Y axis.
 					console.log("i: " + i);
 					console.log("PlantDate: " + row.trees_[i].plantDate_);
-					addTreeTest(row.trees_[i].plantDate_);;
+					addTreeTest(row.trees_[i]);;
 
 
+					
 					//draw lines between conected nodes:
 					//drawing lines raises the question of how to handle row elements with
 					//the same plant Date?
@@ -202,28 +220,56 @@
 
 
 
-			function addTreeTest(translateAmt){
-				/*
-				 adds a new tree object to the scene
+			function addTreeTest(tree){
+				//adds tree object to scene
 
-				 Creates correct geometry
-				 adds into the scene
-				*/
 
-				const treeGeometry = new THREE.BoxGeometry( 1, 1, 1 ); 
+				//should also add some sort of pointer to the mesh that points to the 
+				//underlying tree object so that the intersect method can grab info from there
+
+				const treeGeometry = new THREE.BoxGeometry( 2, 2, 1 ); 
    				const treeMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
     			const cube = new THREE.Mesh( treeGeometry, treeMaterial ); 
-				cube.translateOnAxis(new THREE.Vector3(0,1,0).normalize(), translateAmt);
-				
+				cube.translateOnAxis(new THREE.Vector3(0,1,0).normalize(), tree.plantDate_);
+				cube.tree_ = tree;
+				//TODO: figure if this is passing pointers (if js even does that)
+				//and if it's not see if can improve memory efficiency
     			scene.add( cube );
-
-
 			}
 
-			function Row(nameStr){
+
+		
+
+
+			function Orchard(name){
+				//creates a new orchard object
+
+				//dummy implementation of orientation_:
+					//currently 1 = vertical, 0 = horizontal
+
+				const orch = {
+					name_: name,
+					orientation_: 1,
+					rows_: [],
+					addRow_: function(row){
+						rows_.push(row);
+					}
+				}
+				return orch;
+			}
+
+
+
+
+			function Row(nameStr, start, end){
 				//Creates a new row and adds it to the Orchard Array
 
+				//dummy variables start and end
+
+
 				const row = {
+					start_: start,
+					end_: end,
 					name_: nameStr,
 					trees_: [],
 					AddTree_: function(tree){
@@ -287,8 +333,49 @@
 
 			}
 
+
+			function handleIntersection(intersects){
+				//handles behavior for what to do when mouse moves over a node:
+				//should also add a method for what to do when click on intersected object
+
+				//at the moment can only change things when you intersect,
+				//no way to "undo" change when move mouse away from tree.
+
+				//
+
+				for ( let i = 0; i < intersects.length; i ++ ) {
+					//loop first checks if there have been any intersected elements
+
+
+					if( !(intersects[i].object.tree_ === undefined)){
+						//next checks to see if any of those intersected objects have a tree_ field
+						//if they do prints the content of said tree's leaves to the console.
+						const leaves = intersects[i].object.tree_.leaves_;
+
+						for(let j = 0 ; j < leaves.length ; j++){
+
+							console.log(leaves[j].content_);
+						}
+					}
+					
+
+
+				}
+
+			}
+
+
+
 			function render() {
 
+				
+				// update the picking ray with the camera and pointer position
+				raycaster.setFromCamera( pointer, camera );
+
+				// calculate objects intersecting the picking ray
+				intersects = raycaster.intersectObjects( scene.children );
+
+				handleIntersection(intersects);
 
 				renderer.render( scene, camera );
 

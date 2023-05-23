@@ -6,6 +6,90 @@
  * 
  * Tree's are planted in rows, and rows make up orchards
  */
+import java.util.ArrayList; //I use alot of arraylists
 public class Tree {
+	
+	
+	private String name_;
+	//boolean hideSpoilers_;
+	private ArrayList<Leaf> leaves_;
+	private int plantDate_;//instead of storing a list of when all the trees "are" in each row, each tree instead gets a 
+							//"plant date" this refers to where on the row the tree appears
+	ArrayList<Boolean> isVisible_; //this is not initilized immediatly, but rather when we start viewing data, it is
+									//initilized, and used to keep track of info.
+	
+	
+	/*
+	 * It might be better to instead of continuously check if each piece of info is visible, to have a third list, 
+	 * which is just "is currently visible", then if any actions are performed that effect the visibility of a piece of info
+	 * we run through and check each piece, assign the appropriate flag, then use that to determine if a piece of content
+	 * is visible
+	 */
+	
+	
+	
+		
+	public Tree(String name, int plantDate) {
+		/**
+		 * private constructor that handles everything that always has to happen, each specific case get's it's own
+		 * constructor that calls this one.
+		 * 
+		 * Might be abit superfluous, but it's good for now
+		 */
+		leaves_ = new ArrayList<Leaf>();
+		name_ = name;
+		plantDate_ = plantDate;
+	}
+	
+	
+	public String getContent(int index) {
+		return leaves_.get(index).getContent();
+	}
+	
+	public void AddContent(String content) {
+		/**
+		 *This is intended to be robust, but at the moment it feels like it's dealing with non existent edge cases.
+		 *
+		 *TODO: make this actually useful
+		 */
+			leaves_.add(new Leaf(content, 0));
+	}
+	
+	public void AddContent(String content, int visibleDate) {
+		leaves_.add(new Leaf(content, visibleDate));
+	}
+	
+	public ArrayList<Leaf> getLeaves() {
+		return leaves_;
+	}
 
+	
+	public int size() {
+		return leaves_.size();
+	}
+	
+	public int getPlantDate() {
+		return plantDate_;
+	}
+	
+	
+	public void ReorderContent(int from, int to) {
+		/**
+		 * Handles reordering elements of the "content" list, also properly handles associated actions:
+		 * namely reordering the visiblePoint_ List appropriately
+		 * 
+		 * 
+		 */
+			
+	}
+	
+	
+	public void ReorderChronologicly() {
+		/**
+		 * potential method that will reorganize the content_ list in chronological order as set by the VisiblePoints_ list
+		 */
+	}
+	
+	
+	
 }

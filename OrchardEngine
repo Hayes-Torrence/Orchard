@@ -1,0 +1,87 @@
+import java.util.Scanner;
+
+/**
+ * 
+ * @author Hayes
+ * 
+ * Run to initalize Orchard Program, thereby allowing you to create new orchards, interact with preveously generated files and more
+ */
+public class OrchardEngine {	
+	
+	
+	public static void main(String[] Args) {
+		
+	
+		
+		System.out.println("OrchardEngine GO!");
+		
+		
+		Scanner input = new Scanner(System.in);
+		String readin = "hi";
+		//for now scanner input is the only way to interact w/ program
+		Orchard testOrchard = new Orchard();
+		
+		
+		testOrchard.addRow("row1");
+		Row testRow1 = testOrchard.getRow(0);
+		Tree testTree1 = new Tree("Mehmed", true);
+		Tree testTree2 = new Tree("Osman", true);
+		
+		testRow1.addTree(testTree1);
+		testRow1.addTree(testTree2);
+		
+		
+		testTree1.AddContent("Mehmed was born on day X", 60);
+		testTree1.AddContent("Mehmed did some Studd on day ;)", 110);
+		testTree1.AddContent("Mehmed died on day Y",-10);
+		testTree1.AddContent("Mehmed was sad about some stuff", 70 );
+		
+		
+		testTree2.AddContent("Osman Balled out", 1);
+		testTree2.AddContent("Osman Continues to Ball", 4);
+		testTree2.AddContent("Osman took a break Balling", -3);
+		testTree2.AddContent("Osman died Ballin", 60);
+		
+		ViewingWindow testWindow = new ViewingWindow(0, 100);
+		
+		System.out.println(testWindow.printTree(testTree1));
+		
+		System.out.println("past printTree");
+		
+		System.out.println(" ");
+		System.out.println(testWindow.printRow(testRow1));
+		
+		System.out.println("Past printRow");
+		
+		while(!readin.equals("Exit")) {
+			/**
+			 * loop continues untill user inputs "Exit" into Scanner
+			 */
+			
+			//if()
+			
+			if(readin.equals("PT")) {
+				/**
+				 * "PT" = Print Tree
+				 */
+				System.out.println("Name: ");
+				String name = input.nextLine(); 
+				testOrchard.addRow(name);
+			}
+				
+			
+			
+			
+			
+			
+			readin = input.nextLine();
+		}
+		
+		input.close();
+		
+		
+		
+	}
+	
+	
+}

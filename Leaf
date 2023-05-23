@@ -1,0 +1,33 @@
+
+
+/**
+ * 
+ * @author Hayes
+ *
+ *An informational node on a row is a tree, an informational node on a tree is a leaf
+ *
+ *
+ *Adding this seems to have made some subsequent ViewingWindow methods more complicated, But I suspect that has more to 
+ *do with this being a semi-skeletal implementaition
+ *
+ */
+public class Leaf {
+
+	
+	int visibleDate_;
+	String content_;
+	
+	public Leaf(String content, int visibleDate) {
+		
+		visibleDate_ = visibleDate;
+		content_ = content;
+	}
+
+	public String getContent() {
+		return content_;
+	}
+
+	public int getVisibleDate() {
+		return visibleDate_;
+	}
+}

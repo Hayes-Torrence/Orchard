@@ -1,0 +1,323 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
+/**
+ * 
+ * @author Hayes
+ *
+ */
+public class JSONPrinter {
+/**
+ * test space for working with Json Objects
+ * 
+ * 
+ */
+	
+	private static String indent_ = "";
+	final static String INDENTLEVEL = "    ";
+	private static PrintWriter writer_;
+	
+	public static void print(String string) {
+		/**
+		 * maybe make this a wrapper around PrintWriter.write method such that it just writes, but also does the indent.
+		 */
+		writer_.println(indent_ + "\"" + string + "\"" );
+	}
+	
+	
+	public static void printPair(String key, String value) {
+		String toPrint = (indent_ + "\"");
+		toPrint = toPrint + key + "\"" ;
+		//adds the key to the string and wraps it in quotation marks
+		toPrint = toPrint + ":";
+		toPrint = toPrint + " " +"\"" + value + "\",";
+		writer_.println(toPrint);
+		//writer_.println(indent_ + "\"" + string + "\"" );
+	}
+	
+	public static void printPair(String key, int value) {
+		String toPrint = (indent_ + "\"");
+		toPrint = toPrint + key + "\"" ;
+		//adds the key to the string and wraps it in quotation marks
+		toPrint = toPrint + ":";
+		toPrint = toPrint + " " +"\"" + value + "\",";
+		writer_.println(toPrint);
+		//writer_.println(indent_ + "\"" + string + "\"" );
+	}
+	
+	/* Levels of Heirarchy and the associated info I care about:
+	 * 
+	 *	Orchards: Rows, name, //orientation?
+	 * 		Rows: start, end, name, Trees
+	 * 			Trees: name, plantDate, Leaves
+	 * 				Leafs: visibleDate, Content
+	 */
+	
+	
+	public static void OpenArrayOfObjects(String key) {
+		writer_.println(indent_ + "\"" + key + "\"" + ": [");
+		UpLevel();
+	}
+	
+	public static void PrintArray(String key, String[] values) {
+		/**
+		 * method used to print an array of values
+		 */
+	}
+	
+
+	public static void OpenArray(String key) {
+		/**
+		 * starts printing a new array and handles indentation
+		 * prints| "key" : {
+		 */
+		writer_.println(indent_ + "\"" + key + "\"" + ": [");
+		UpLevel();
+	}
+	
+	public static void CloseArray() {
+		/**
+		 * "closes" an array: prints "]," then reduces indent
+		 */
+		writer_.println(indent_ + "],");
+		downLevel();
+	}
+	
+
+	public static void OpenObject(String key) {
+		/**
+		 * starts printing a new object and handles indentation
+		 * prints| "key" : {
+		 */
+		UpLevel();
+		writer_.println(indent_ + "\"" + key + "\"" + "{");
+	}
+	
+	public static void OpenObject() {
+		/**
+		 * method used when opening object in array of objects -> has no key 
+		 */
+		//UpLevel();
+		writer_.println(indent_ + "{");
+		UpLevel();
+	}
+	
+	public static void CloseObject() {
+		/**
+		 * "closes" an object: prints }
+		 * 	then reduces indent
+		 */
+		downLevel();
+		writer_.println(indent_ + "},");
+	}
+
+	public static void CloseObject(boolean comma) {
+		/**
+		 * Comma: if true prints with comma, and vice versa
+		 */
+		downLevel();
+		
+		if(comma) {
+			writer_.println(indent_ + "},");	
+		}
+		else {
+			writer_.println(indent_ + "}");
+		}
+	}
+	
+
+	
+	public static void UpLevel() {
+		/**
+		 * method meant to handle indenting appropriatly,
+		 * also more once I think of it
+		 */
+		indent_ = indent_ + INDENTLEVEL;
+	}
+	
+	
+	public static void downLevel() {
+		/**
+		 * handles moving "down" an indentation level
+		 */
+		indent_ = indent_.substring(0, indent_.length()-4);
+	}
+	
+	
+	public static void CloseArrayOfObjects() {
+		downLevel();
+		writer_.println(indent_  + "]");
+		
+	}
+	
+	
+	
+	
+	public static void PrintRow(Row row, boolean comma) {
+		/**
+		 * Prints a row object to the JSON file,
+		 */
+		OpenObject();
+		printPair("start" , row.start_);
+		printPair("end", row.end_);
+		printPair("name", row.name_);
+		OpenArrayOfObjects("Trees");
+		
+		
+
+		int numTrees = row.getTrees().size();
+		int index = 0;
+		
+		
+		for(Tree tree : row.trees_) {
+			index++;
+			PrintTree(tree, index != numTrees);//if the index equals the number of trees it's the last one -> no commas
+			
+		}
+		CloseArrayOfObjects();
+		CloseObject(comma);
+
+		
+		/*
+		 * TODO: Current Close Object methods places an unneeded final comma behind the last } before the end of the array
+		 */
+		//print Tree's
+		//close object
+		
+	}
+	
+	
+	
+	public static void PrintTree(Tree tree, boolean comma) {
+		OpenObject();
+		printPair("name", tree.getName());
+		printPair("plantDate", tree.getPlantDate());
+		
+		OpenArrayOfObjects("leaves");
+		
+		int numLeaves = tree.getLeaves().size();
+		int index = 0;
+		
+		for(Leaf leaf : tree.getLeaves()) {
+			index++;
+			PrintLeaf(leaf, index != numLeaves); //if the index equals the number of leaves it's the last one -> no commas
+		}
+		CloseArrayOfObjects();
+		
+		CloseObject(comma);
+	}
+	
+	
+	public static void PrintLeaf(Leaf leaf, boolean comma) {
+		OpenObject();
+		printPair("visibleDate", leaf.getVisibleDate());
+		printPair("content", leaf.getContent());
+		CloseObject(comma);
+	
+		
+	}
+	
+	
+	
+	
+	/*
+	 * {
+	 * 		"name" : "test1",
+	 * 		"rows" : [
+	 * 			{
+	 * 				start : 
+	 * 				end : 
+	 * 				name :
+	 * 				trees : [
+	 * 					{
+	 * 						name:
+	 * 						plantDate:
+	 * 						Leaves : [
+	 * 							{
+	 * 								visibleDate: 
+	 *		 						content: 
+	 * 							}
+	 * 		 					{
+	 * 								visibleDate: 
+	 *	 							content: 
+	 *	 							}
+	 * 						]//end array of leaves
+	 * 				}//end tree object
+	 * 				{
+	 * 						name:
+	 * 						plantDate:
+	 * 						Leaves : [
+	 * 							{	visibleDate: 
+	 *	 							content: 
+	 * 							}
+	 * 		 					{	visibleDate: 
+	 *	 							content: 
+	 * 							}
+	 * 						]//end array of leaves
+	 * 					}//end tree object
+	 * 
+	 * 				]//end array of trees
+	 * 			}//end of row object
+	 * 		]// end array of rows
+	 * 	
+	 * 
+	 * }//end of orchards.json		
+	 * 
+	 * 
+	 * 
+	 */
+
+	public static void orchardToJSON(Orchard orchard) {
+		
+		
+		String fileName = "C:\\Users\\Hayes\\Desktop\\Java Stuff\\Personal Projects\\Orchard\\src\\OrchardWriterTest.txt";
+		
+		try {
+			writer_ = new PrintWriter(fileName, "UTF-8");			
+			writer_.println("{");
+			
+			UpLevel();
+			
+			printPair("name", orchard.getName());
+			OpenArrayOfObjects("Rows");
+			
+			int index = 0;
+			int numRows = orchard.rows_.size();
+			
+			for(Row r : orchard.rows_) {
+				index++;
+				PrintRow(r, numRows != index);
+			}
+			
+			CloseArrayOfObjects();
+
+			writer_.println("}");
+			writer_.close();
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+
+

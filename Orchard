@@ -6,9 +6,26 @@
  * side by side, one would create one Orchard object, which would contain two [THING] objects.
  *
  */
+
+
+import java.util.ArrayList; //current implementation uses arraylist, depending on if nessicary, may change in future
+
+
 public class Orchard {
 	
+	protected ArrayList<Row> rows_; //the list of Row Objects that compose the orchard.
+	
+	
 	public Orchard() {
+		
+		/*
+		 * Current implementation is focused on two use cases: heirarchical Trees (family, realm, etc)
+		 * and linear displays (time line (s), ...)
+		 * 
+		 */
+		rows_ = new ArrayList<Row>();
+		
+		
 		
 	}
 	

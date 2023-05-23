@@ -1,0 +1,131 @@
+/**
+ * 
+ * @author Hayes
+ * Represents the dynamic parts of the implementation: rows, orchards, and tree's are information containers, this viewing
+ * window interacts with them, and is what's used to control things like if a visibilty check has been passed.
+ * 
+ * Think of it like this: the orchard is all the info, the window is the portion we're currently looking at.
+ * 
+ * 
+ */
+
+
+public class ViewingWindow {
+
+	 //each individual tree contains some information, along with some check that determines if said
+	 //info is currently visible. Currently visibility is decided by Orchard level info, but that's overly
+	 //complicated/ puts info that's beyond the orchard's scope in the orchard class.
+	 //almost implies that there should be some kind of "Viewing Window" class, and that would 
+	 //directly interact with tree's to determine if info is visible.
+	
+	boolean variableView_; //determines if changing the viewing range effects the info being displayed:
+						   //if this is false, all info is always displayed
+	
+	int lowerBound_;
+	int upperBound_;
+	
+	public ViewingWindow() {
+		
+	}
+	
+	public ViewingWindow(int lower, int upper) {
+		lowerBound_ = lower;
+		upperBound_ = upper;
+	}
+	
+	public boolean isVisible(Tree tree, int index) {
+		/**
+		 * determines if the info within a tree is currently visible, baised on the info's visiblePoint, and the 
+		 * current range of the ViewingWindow
+		 * 
+		 * tree: the tree of interest
+		 * index: the index of the desired content node
+		 */
+		
+		
+		
+		int visiblePoint = tree.getLeaves().get(index).getVisibleDate();
+		
+		if(visiblePoint >= lowerBound_ && visiblePoint <= upperBound_) {
+			return true;
+		}
+		return false;
+	}//end isVisible(tree, index);
+	
+	
+	/**
+	 * 
+	 * The following "printX" methods are primarly debugging tools/ensurance the engine is running right when start
+	 * working with graphics.
+	 * 
+	 */
+	public String printOrchard(Orchard orchard) {
+		/**
+		 * returns a string representative of an orchard
+		 * 
+		 * More difficult than initially appears: seeing as the idea of an orchard is that it allows for printing
+		 * simultaneous rows.
+		 * 
+		 * 
+		 * Create a master array (with dates? (each ArrayRow coresponds with a unique date?)), 
+		 * 
+		 * 
+		 * 
+		 */
+		
+		
+		
+		
+		String product = "";
+		
+		return "dummy";
+	}
+	
+	
+	public String printRow(Row row) {
+		/**
+		 * returns a string representative of a Row
+		 */
+		String content = "";
+		for(int index = 0 ; index < row.size() ; index++) {
+			//basically we just call print tree over and over again, but we add carrige returns 
+			
+			content = content + printTree(row.getTree(index));
+			content = content + "\r";
+			content = content + "     |     ";
+			content = content + "\r";
+			
+			
+		}//end for(index)		
+		
+		return content;	
+	}
+	
+	public String printTree(Tree tree) {
+		/**
+		 * returns a string representative of a Tree
+		 */
+		
+		String product = "| ";
+		String content = "";
+		for(int index = 0 ; index < tree.size() ; index++) {
+			
+			if(isVisible(tree, index)){
+				content = tree.getLeaves().get(index).getContent();
+				product = product + content + " | ";
+			}
+			
+		}//end for(index)		
+		
+		return product;	
+		
+	}//end printTree()
+	
+	
+	
+	
+	
+	
+	
+	
+}

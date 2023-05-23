@@ -1,17 +1,158 @@
 /**
  * 
  * @author Hayes
- * 
- * An orchard is the highest level container objects, for example, if one wanted to display two family trees, 
- * side by side, one would create one Orchard object, which would contain two [THING] objects.
- *
+ * Named after tree rows in an orchard, mid level object: a single time line, or a single family tree would be represented 
+ * in code as a Row
  */
-public class Orchard {
+
+
+import java.util.ArrayList;
+
+public class Row {
+
+	protected int start_; //used with end to set the "bounds" of the row, for a timeline this would be the start and end date
+	protected int end_;
+	protected String name_;
+	protected ArrayList<Tree> trees_;
+	//protected ArrayList<Integer> treeLocations_;//list of the actual position within the row of a tree.
+
 	
-	public Orchard() {
+	
+	private Row(String name) {
+		/*
+		 * Opperations on the row level: adding nodes, reordering nodes, setting/effecting the bounds of a row
+		 */
+		trees_ = new ArrayList<Tree>();
+		name_ = name;
+	}
+	
+
+	public Row(String name, int start, int end) {
+		/**
+		 * Need to implement automatic handling of start and end date.
+		 * 	This begs the questions of: what happens when a tree is added at a point outside of the range of 
+		 *  the Row: the row should expand to include the tree.
+		 *  
+		 *   Also: at the moment Tree's have no defining point: The content within them has points at which it becomes
+		 *   visible or not, but the actual tree has no defined location in time or the row.
+		 */
+		this(name);
+		start_ = start;
+		end_ = end;
+	}
+	
+	public void addTree(Tree tree) {
+		/**
+		 * Add's tree, then ensures the bounds of the row include the new tree.
+		 */
+		trees_.add(tree);
+		expandRow(tree.getPlantDate());
+	}
+	
+
+	
+	public void addTree(String name, int plantDate) {
+		/**
+		 * Add's tree w/o constructing Tree object first, defaults to tree having dynamic info display
+		 */
+		trees_.add(new Tree(name, plantDate));
+		expandRow(plantDate);
+	}
+	
+	private void expandRow(int location) {
+		/**
+		 * helper that test's if potential location lies outside the bounds of the row,
+		 * if it is determined it does, bounds are updated to accomidate
+		 */
+		if(start_ > location) {
+			start_ = location; //if location procedes start of row, changes start to location
+		}
+		if(end_ < location) {
+			end_ = location;
+		}
+	}//end expandRow()
+	
+	private boolean outOfBounds(int location) {
+		/**
+		 * tests if a location is outside of the bounds of the row
+		 */
+		if(start_ > location || end_ < location) {
+			return true;
+		}
+		return false;		
+	}//end outOfBounds
+	
+	
+	
+	public int size() {
+		return trees_.size();
+	}
+	
+	public Tree getTree(int index) {
+		return trees_.get(index);
+	}
+	
+	public int getStart() {
 		
+		return start_;
+	}
+	
+	private void setStart(int start) {
+		/**
+		 * Set's the starting range, checks against treeLocation_ list to make sure setting to legal value.
+		 * 
+		 * TODO: Make this check against the treeLocation_ list to ensure legal value.
+		 * 
+		 */
+		
+		
+		
+		start_ = start;
+	}
+	
+	public int getEnd() {
+		return end_;
+	}
+	
+	private void setEnd(int end) {
+		end_ = end;
 	}
 	
 	
-
+	private void orderTrees() {
+		/**
+		 * not sure if need or not
+		 * 
+		 * Idea is that can add tree's to a row in whatever order I want, and all that matters is the value stored in the
+		 * treeLocation_ array.
+		 * 
+		 * But I kinda feel like if there was a method that would reorganize the trees_ and treeLocation_ lists, such that 
+		 * the treeLocations_ list is in order, it becomes alot easier to do things like print, because then
+		 * we just need to itterate through in order.
+		 */
+	}
+	
+	public String getName() {
+		return name_;
+	}
+	
+	
+	
+	
+	
+	/*
+	 * Reordering Nodes(){
+	 * 	
+	 * 	A drag and drop implementation would require that by selecting a point along the row, will be able to 
+	 *  Potentially more efficient to instead of actually moving things within the rows_ list, have a secondary list
+	 *  where indicies are corelated, and the value stored in the secondary list is the position of the object in the first
+	 *  list, in the row, 
+	 *  
+	 *  The above idea is an optimization, not an implementation, save it for round two: write good enough code, and will 
+	 *  be able to implement it pretty seamlessly
+	 * 
+	 * }
+	 */
+	
+	
 }

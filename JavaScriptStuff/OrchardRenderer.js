@@ -90,25 +90,53 @@
 				//Make a new geometry, add it to the scene
 
 				var testRow3 = Row("The Ottomans",-10, 10);
+				var testRow4 = Row("the Byzantines", -10, 10 );
+				var testRow5 = Row("Hungary", -10, 10);
+
+
+				orchard.addRow_(testRow3);
+			//	orchard.addRow_(testRow4);
+			//	orchard.addRow_(testRow5);
+
+
 				var testTree = Tree("Sulyman", 9);
 				var testLeaf = Leaf("Sulyman executed the grandvizir", 7);
 				
-				orchard.addRow_(testRow3);
 
 				var testTree2 = Tree("Osman", -10);
 				var testLeaf2 = Leaf("Osman entered the singularity and emerged unscathed", 1);
+
+
+				testTree.AddLeaf_(testLeaf);
+				testTree2.AddLeaf_(testLeaf2);
 				testTree2.AddLeaf_(Leaf("Armed with knowledge gleaned from the time snakes, osman set out to forge his new empire"), 3);
-				testRow3.AddTree_(Tree("Mehmed", 1));
+
+
 
 
 				testRow3.AddTree_(testTree);
-				testTree.AddLeaf_(testLeaf);
-				
-
 				testRow3.AddTree_(testTree2);
-				testTree2.AddLeaf_(testLeaf2);
-
+				testRow3.AddTree_(Tree("Mehmed", 1));
 				testRow3.AddTree_(Tree("TimeSnake Osman", 1));
+
+
+
+				console.log(testRow3);
+
+				testRow3.trees_[0].AddLeaf_(Leaf("TimeSnake Osman attempted to steal the gem of will from osman", 7));
+
+
+
+				testRow4.AddTree_(Tree("Palageous IV", 7));
+				testRow4.AddTree_(Tree("Palageous III", 3));
+
+				testRow4.trees_[0].AddLeaf_(Leaf("Bro got boddied ", 4));
+				testRow4.trees_[1].AddLeaf_(Leaf("Bro looks forward to the reign of his son and name bearer", 3));
+
+				testRow5.AddTree_(Tree("mathias Corvinius", -4));
+				testRow5.trees_[0].AddLeaf_(Leaf("Matias balled out in civ multiplayer", 6));
+
+
 
 
 				//drawRow(testRow3);
@@ -119,16 +147,20 @@
 				
 
 				drawConnection(testTree, testTree2);
+				//drawConnection(testRow4.trees_[0], testRow4.trees_[0]);
+			
+				
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.body.appendChild( renderer.domElement );
 
-				drawRow(testRow3);
+				//drawRow(testRow3);
 
-				processRow(testRow3);
+				//processRow(testRow3);
 				
+				drawOrchard(orchard);
 
 				stats = new Stats();
 				document.body.appendChild( stats.dom );
@@ -149,6 +181,7 @@
 
 				//raycasting code
 				//TODO: finish raycasting implementation
+				window.addEventListener( 'mousedown', onClick);
 				window.addEventListener( 'pointermove', onPointerMove );
 
 			}
@@ -163,8 +196,27 @@
 
 			}
 
+			function onClick(event){
+				//used to click on elements of the scene
 
-			function drawOrchard(){
+				pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+
+
+				raycaster.setFromCamera( pointer, camera );
+
+				// calculate objects intersecting the picking ray
+
+				intersects = raycaster.intersectObjects( scene.children );
+				handleIntersection(intersects);
+
+
+
+			}
+
+
+			function drawOrchard(orchard){
 				//Boot strapper that starts and handles the whole process of drawing an orchard:
 					//currently just want to be able to display multiple rows
 
@@ -175,8 +227,75 @@
 
 
 				//use the new row objects allong with the determined info to draw out each node
+				let biggestSpacer = 4;
+				let spacerX = 4;
+				let spacerIncrement = 7;
+				let spacerY = 3;
+				for(let k = 0 ; k < orchard.rows_.length ; k++){
+					const orderedRow = processRow(orchard.rows_[k]);
 
+
+					console.log("row[k]");
+					console.log(orchard.rows_[k]); 	
+					spacerX = spacerX + biggestSpacer;
+					biggestSpacer = 0;
+					//reset it to 0 so if have say 3 rows, and the first one has a ton of
+					//horizonallity, but the second and 3rd dont, dont need so much space between
+					//rows 2 & 3
+
+					// right now instead of processing out how much to 
+					//seperate out trees by, using these place holders
+
+					for(let i = 0 ; i < orderedRow.length ; i++){
+						//for each entry in orderedRow
+							//print out a new tree,
+							//if more than one node exists 
+							if(orderedRow[i].length > 2){
+
+								for(let j = 1 ; j <orderedRow[i].length ; j++){
+									//plants tree, then increases the space between nodes of same row
+									plantTree(orderedRow[i][j], spacerX);
+									spacerX = spacerX + spacerIncrement;
+								}
+								if(spacerX > biggestSpacer){
+									//primitive way to implement spacing between multiple rows
+									biggestSpacer = spacerX;
+								}
+								spacerX = 4; //resets spacer amount back to original
+								continue;	//jumps back up to top loop
+							}
+							plantTree(orderedRow[i][1], spacerX);
+									//if just one tree at a plant date, just plant that one
+					//this tickles my brain a little bit as to: I feel like we could just do this
+					//durring the processing step. But that's an efficiency, not 
+					//an implementation.
+					//TODO: Consolidate how many loops and loops within loops I need
+					}
+					
+					
+
+				}
 			}
+
+			function plantTree(tree, spacerX){
+				//adds tree object to scene
+				//adds pointer to underlying tree object for use in displaying info
+
+				console.log("plantTree: " + tree.name_);
+				console.log("spacerX: " + spacerX);
+
+				const treeGeometry = new THREE.BoxGeometry( 2, 2, 1 ); 
+   				const treeMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+    			const cube = new THREE.Mesh( treeGeometry, treeMaterial ); 
+				cube.tree_ = tree;
+
+				cube.translateOnAxis(new THREE.Vector3(0,1,0).normalize(), tree.plantDate_);
+				cube.translateOnAxis(new THREE.Vector3(1,0,0).normalize(), spacerX);
+				//TODO: figure if this is passing pointers (if js even does that)
+				//and if it's not see if can improve memory efficiency
+    			scene.add( cube );
+			}
+
 
 			function processRow(row){
 				//Version 1 implementation -> messy
@@ -186,9 +305,6 @@
 				const rowP = [];
 				let currentPlantDate; //TODO: better varaible name
 
-
-				console.log("row.trees_[0].plantDate_");
-				console.log(row.trees_[0].plantDate_);
 
 				rowP.push([row.trees_[0].plantDate_, row.trees_[0]]);
 				//not sure how efficient splice is as an opperation,
@@ -220,8 +336,6 @@
 						//once it finds a duplicate plant date, or one where the next is greater,
 						//and the current is lesser, sticks it there
 
-						console.log("j loop: " + j);
-
 						if(j > 6){
 							//TODO: remove this once confident in safety of code
 							break;
@@ -230,18 +344,14 @@
 
 						if(rowP[j][0] === currentPlantDate){
 							//
-							console.log("firstONe");
-							console.log(row.trees_[i]);
-							console.log("%%%%%%%%%");
+
 							rowP[j].push(row.trees_[i]);
 							break; 
 						}
 						else if(rowP[j][0] > currentPlantDate){
 							//if we find a plant date bigger than the current we stick the current one
 							//before that
-							console.log("secondOne");
-							console.log(row.trees_[i]);
-							console.log("%%%%%%%%%");
+
 							rowP.splice(j, 0 , [row.trees_[i].plantDate_, row.trees_[i]]);
 							break;
 
@@ -255,6 +365,8 @@
 					}
 				}
 
+				console.log("rowP: ");
+				console.log(rowP);
 				//so now we have a 2d array where the first entry is the plant date,
 				//and all the subsequent values are trees planted at that date
 				return rowP;
@@ -534,7 +646,7 @@
 				requestAnimationFrame( animate );
 
 				//Spin();
-				//WEEEEEEEEEEEEEEEEEEEEEEEW
+				//WEEEEEEEEEEEEEEEEEEEEEEE
 
 				render();
 			
@@ -562,11 +674,8 @@
 				//at the moment can only change things when you intersect,
 				//no way to "undo" change when move mouse away from tree.
 
-				//
-
 				for ( let i = 0; i < intersects.length; i ++ ) {
 					//loop first checks if there have been any intersected elements
-
 
 					if( !(intersects[i].object.tree_ === undefined)){
 						//next checks to see if any of those intersected objects have a tree_ field
@@ -577,12 +686,8 @@
 
 							console.log(leaves[j].content_);
 						}
-					}
-					
-
-
+					}					
 				}
-
 			}
 
 
@@ -591,12 +696,7 @@
 
 				
 				// update the picking ray with the camera and pointer position
-				raycaster.setFromCamera( pointer, camera );
 
-				// calculate objects intersecting the picking ray
-				intersects = raycaster.intersectObjects( scene.children );
-
-				handleIntersection(intersects);
 
 				renderer.render( scene, camera );
 

@@ -34,6 +34,7 @@
 			let camera, scene, renderer, stats;
 
 			let mesh;
+			var viewingWindow;
 
 			var raycaster = new THREE.Raycaster();
 			var pointer = new THREE.Vector2();
@@ -89,64 +90,71 @@
 
 				//Make a new geometry, add it to the scene
 
-				var testRow3 = Row("The Ottomans",-10, 10);
-				var testRow4 = Row("the Byzantines", -10, 10 );
-				var testRow5 = Row("Hungary", -10, 10);
+
+				viewingWindow = ViewingWindow(-10, 10);
+
+				var ottomanRow = Row("The Ottomans",-10, 10);
+				var byzRow = Row("the Byzantines", -10, 10 );
+				var hungaryRow = Row("Hungary", -10, 10);
 
 
-				orchard.addRow_(testRow3);
-			//	orchard.addRow_(testRow4);
-			//	orchard.addRow_(testRow5);
+				orchard.addRow_(ottomanRow);
+				orchard.addRow_(byzRow);
+				orchard.addRow_(hungaryRow);
 
 
-				var testTree = Tree("Sulyman", 9);
-				var testLeaf = Leaf("Sulyman executed the grandvizir", 7);
-				
+				var sulymanTree = Tree("Sulyman", 9);
+				var sullyLeaf1 = Leaf("Sulyman executed the grandvizir", 7);
+				sulymanTree.AddLeaf_(Leaf("Sulyman got REALLY religious", 2))
 
-				var testTree2 = Tree("Osman", -10);
-				var testLeaf2 = Leaf("Osman entered the singularity and emerged unscathed", 1);
-
-
-				testTree.AddLeaf_(testLeaf);
-				testTree2.AddLeaf_(testLeaf2);
-				testTree2.AddLeaf_(Leaf("Armed with knowledge gleaned from the time snakes, osman set out to forge his new empire"), 3);
+				var osmanTree = Tree("Osman", -10);
+				var osmanLeaf2 = Leaf("Osman entered the singularity and emerged unscathed", 3);
 
 
+				sulymanTree.AddLeaf_(sullyLeaf1);
+				osmanTree.AddLeaf_(osmanLeaf2);
+				osmanTree.AddLeaf_(Leaf("Armed with knowledge gleaned from the time snakes, osman set out to forge his new empire"), 1);
+
+				console.log("time snake knowledge Leaf create state:");
+				console.log(osmanTree);
 
 
-				testRow3.AddTree_(testTree);
-				testRow3.AddTree_(testTree2);
-				testRow3.AddTree_(Tree("Mehmed", 1));
-				testRow3.AddTree_(Tree("TimeSnake Osman", 1));
-
-
-
-				console.log(testRow3);
-
-				testRow3.trees_[0].AddLeaf_(Leaf("TimeSnake Osman attempted to steal the gem of will from osman", 7));
+				ottomanRow.AddTree_(sulymanTree);
+				ottomanRow.AddTree_(osmanTree);
+				ottomanRow.AddTree_(Tree("Mehmed", 1));
+				ottomanRow.AddTree_(Tree("TimeSnake Osman", 1));
 
 
 
-				testRow4.AddTree_(Tree("Palageous IV", 7));
-				testRow4.AddTree_(Tree("Palageous III", 3));
+				console.log(ottomanRow);
 
-				testRow4.trees_[0].AddLeaf_(Leaf("Bro got boddied ", 4));
-				testRow4.trees_[1].AddLeaf_(Leaf("Bro looks forward to the reign of his son and name bearer", 3));
+				ottomanRow.trees_[3].AddLeaf_(Leaf("TimeSnake Osman attempted to steal the gem of will from osman", 7));
 
-				testRow5.AddTree_(Tree("mathias Corvinius", -4));
-				testRow5.trees_[0].AddLeaf_(Leaf("Matias balled out in civ multiplayer", 6));
+
+
+				byzRow.AddTree_(Tree("Palageous IV", 7));
+				byzRow.AddTree_(Tree("Palageous III", 3));
+
+				byzRow.trees_[0].AddLeaf_(Leaf("Bro got boddied ", 4));
+				byzRow.trees_[1].AddLeaf_(Leaf("Bro looks forward to the reign of his son and name bearer", 3));
+
+				hungaryRow.AddTree_(Tree("mathias Corvinius", -4));
+				hungaryRow.trees_[0].AddLeaf_(Leaf("Matias balled out in civ multiplayer", 6));
 
 
 
 
 				//drawRow(testRow3);
 
-				console.log(testRow3);
-				console.log(testRow3.trees_[0]);
+				console.log(ottomanRow);
+				console.log(ottomanRow.trees_[0]);
 				console.log(orchard.name);
 				
 
-				drawConnection(testTree, testTree2);
+				drawConnection(sulymanTree, osmanTree);
+				drawConnection(ottomanRow.trees_[1], ottomanRow.trees_[3]);
+
+
 				//drawConnection(testRow4.trees_[0], testRow4.trees_[0]);
 			
 				
@@ -210,9 +218,6 @@
 
 				intersects = raycaster.intersectObjects( scene.children );
 				handleIntersection(intersects);
-
-
-
 			}
 
 
@@ -227,8 +232,8 @@
 
 
 				//use the new row objects allong with the determined info to draw out each node
-				let biggestSpacer = 4;
-				let spacerX = 4;
+				let biggestSpacer = 0;
+				let spacerX = 6;
 				let spacerIncrement = 7;
 				let spacerY = 3;
 				for(let k = 0 ; k < orchard.rows_.length ; k++){
@@ -265,15 +270,14 @@
 								continue;	//jumps back up to top loop
 							}
 							plantTree(orderedRow[i][1], spacerX);
+							
 									//if just one tree at a plant date, just plant that one
 					//this tickles my brain a little bit as to: I feel like we could just do this
 					//durring the processing step. But that's an efficiency, not 
 					//an implementation.
 					//TODO: Consolidate how many loops and loops within loops I need
 					}
-					
-					
-
+					spacerX = spacerX + spacerIncrement;
 				}
 			}
 
@@ -419,10 +423,6 @@
     			scene.add( cube );
 			}
 
-
-
-
-
 			function drawConnection(Tree1, Tree2){
 				//method that draws a connecting line between two trees
 
@@ -437,8 +437,6 @@
 				points.push(new THREE.Vector3(0, Tree1.plantDate_, 0));
 				points.push(new THREE.Vector3(0, Tree2.plantDate_, 0));
 
-
-
 				const geometry = new THREE.BufferGeometry().setFromPoints( points );
 				const line = new THREE.Line( geometry, material );
 				scene.add(line);
@@ -446,17 +444,56 @@
 			}
 
 
-			function viewingWindow(){
-				//the part of the orchard that is currently in view -> must be "rendered"
+			function printTree(tree){
+				//high level method called to display the information contained within a tree
+				//takes into account the viewing window:
+					//sorts through all leafs, returns either a string or an array of strings
+					//containing only the info currently visible
 
-				//currently skeleton implementation
-				const window = {
-					start: 0,
-					end: 2023
+				//TODO: Implement boolean flags and listener system so I don't have to
+				//constantly itterate through loops, but rather whenever an event that changes 
+				//what's visible occurs, we call a method that determines what's visible
+				let leaves = [];
+
+				for(let i = 0 ; i< tree.leaves_.length ; i++){
+					//if(isVisible){leaves.push(tree.leaves_[i])}
+					if(isVisible(tree.leaves_[i])){
+						
+						leaves.push(tree.leaves_[i].content_);
+					}
 				}
+				return leaves;
+			}
 
-				return window;
 
+			function isVisible(thing){
+				//can pass a tree or a leaf, will test the type.
+				//at the moment both returns a boolean, and updates flag, in future implementaitons
+				//will just update flag (i think?)
+				console.log("thing: ");
+				console.log(thing);
+				if(thing.isLeaf_ === true){
+					if((thing.visibleDate_ >= viewingWindow.start_) && (thing.visibleDate_ <= viewingWindow.end_)){
+						thing.isVisible_ = true;
+						return true;
+					}
+					thing.isVisible_ = false;
+					return false;
+				}
+				else if(thing.isTree_ === true){
+					if((thing.plantDate_ >= viewingWindow.start_) && (thing.plantDate_ <= viewingWindow.end_)){
+						thing.isVisible_ = true;
+						return true;
+					}
+					thing.isVisible_ = false;
+					return false;
+				}
+				else if(thing.isRow_ === true){
+					//currently row visibility is unimplemented,
+				}
+				console.log("attempted to test the visibility of something that was neither a tree nor a leaf");
+				return false;//if it's a thing that cant be visible, returns false, and prints a
+				//warning to the console 
 			}
 
 
@@ -464,14 +501,19 @@
 
 
 
-		
 
+			function ViewingWindow(start, end){
+				//the part of the orchard that is currently in view -> must be "rendered"
+				//currently skeleton implementation
+				const window = {
+					start_: start,
+					end_: end
+				}
+				return window;
+			}		
 
 			function Orchard(name){
 				//creates a new orchard object
-
-				//dummy implementation of orientation_:
-					//currently 1 = vertical, 0 = horizontal
 
 				const orch = {
 					name_: name,
@@ -494,7 +536,6 @@
 						}
 						return false;
 					}
-
 				}
 				return orch;
 			}
@@ -538,9 +579,6 @@
 			}
 
 
-
-
-
 			function Row(nameStr, start, end){
 				//Creates a new row and adds it to the Orchard Array
 				//dummy variables start and end
@@ -549,7 +587,9 @@
 					start_: start,
 					end_: end,
 					name_: nameStr,
+					isVisible_: true,
 					trees_: [],
+					isRow_: true,
 					AddTree_: function(tree){
 						this.trees_.push(tree);
 					}
@@ -568,6 +608,8 @@
 				const tree = {
 					name_: nameStr,
 					plantDate_: PlantDate,
+					isTree_: true,
+					isVisible_: true,
 					leaves_: [],
 					AddLeaf_: function(leaf){
 						this.leaves_.push(leaf);
@@ -577,10 +619,12 @@
 			}
 
 			function Leaf(content, VisibleDate){
-
+				//todo implement is visible flag
 				const leaf = {
 					content_: content,
-					visibleDate_: VisibleDate
+					visibleDate_: VisibleDate,
+					isVisible_: true,
+					isLeaf_: true
 				}
 
 				return leaf;
@@ -621,16 +665,9 @@
 					leaf2_: Leaf2,
 					content_: Content
 				}
-
-
 				return connec;
 
 			}
-
-
-
-
-
 
 			function onWindowResize() {
 
@@ -648,22 +685,15 @@
 				//Spin();
 				//WEEEEEEEEEEEEEEEEEEEEEEE
 
-				render();
-			
+				render();			
 				stats.update();
-
 			}
-
 
 			function Spin(){
 				//rotates the camera 90 degrees and sets the boolean flags in orchard appropriatly
-				if(orchard.isVertical_){
-					
+				if(orchard.isVertical_){					
 					camera.rotateOnAxis(new THREE.Vector3(0,0,1), .01 );
-
 				}
-
-
 			}
 
 
@@ -677,15 +707,11 @@
 				for ( let i = 0; i < intersects.length; i ++ ) {
 					//loop first checks if there have been any intersected elements
 
-					if( !(intersects[i].object.tree_ === undefined)){
+					if( ! (intersects[i].object.tree_ === undefined)){
 						//next checks to see if any of those intersected objects have a tree_ field
 						//if they do prints the content of said tree's leaves to the console.
-						const leaves = intersects[i].object.tree_.leaves_;
-
-						for(let j = 0 ; j < leaves.length ; j++){
-
-							console.log(leaves[j].content_);
-						}
+						console.log(printTree(intersects[i].object.tree_));
+						
 					}					
 				}
 			}
@@ -701,19 +727,6 @@
 				renderer.render( scene, camera );
 
 			}
-
-
-
-
-
-
-
-
-
-
-			
-
 		</script>
-
 	</body>
 </html>
